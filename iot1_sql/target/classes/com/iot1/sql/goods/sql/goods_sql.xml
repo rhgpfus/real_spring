@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd"> 
+
+<mapper namespace="goodsInfo">
+
+	<select id="SELECT_GODDS" parameterType="goods" resultType="goods">
+	  select 
+	    ginum,
+	    giname,
+	  	gidesc,
+	  	vinum,
+	  	gidate,
+	  	gitime
+	  from goods_info
+	  where 1=1
+	  <if test="viNum!=0">
+	  	and vinum = #{viNum}
+	  </if> 
+	 <!-- #{viNum} : GoodsInfo에 있는 viNum을 바인딩.
+		parameterType="user" 이것이 UserInfo를 바라본다.
+	 	resultType : 리턴타입이  goods(GoodsInfo)-->
+	</select>
+</mapper>
+
+
+
+
+
+
