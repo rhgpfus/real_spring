@@ -26,5 +26,50 @@ public class GoodsServiceImpl implements GoodsService{
 		return gd.selectGoodsInfoList(gi);
 	}
 
+	@Override
+	public int insertGoodsList(GoodsInfo[] giList) {
+		int cnt = 0;
+		for(GoodsInfo gi : giList){
+			cnt += gd.insertGoods(gi);
+		}
+		return cnt;
+	}
+
+	@Override
+	public int insertGoods(GoodsInfo gi) {	
+		
+		return gd.insertGoods(gi);
+	}
+
+	@Override
+	public int updateGoodsList(GoodsInfo[] giList) {
+		int cnt = 0;
+		for(GoodsInfo gi : giList){
+			cnt += gd.updateGoods(gi);
+		}
+		return cnt;
+	}
+	
+	@Override
+	public int updateGoods(GoodsInfo gi) {
+		
+		return gd.updateGoods(gi);
+	}
+	
+	@Override
+	public int deleteGoodsList(GoodsInfo[] giList) {
+		int cnt = 0;
+		for(GoodsInfo gi : giList){
+			cnt += gd.deleteGoods(gi);
+		}
+		return cnt;
+	}
+
+	@Override
+	public int deleteGoods(GoodsInfo gi) {
+		
+		return gd.updateGoods(gi);
+	}
+
 	
 }

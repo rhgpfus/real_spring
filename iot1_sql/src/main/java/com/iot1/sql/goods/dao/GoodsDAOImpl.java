@@ -22,4 +22,22 @@ public class GoodsDAOImpl extends SqlSessionDaoSupport implements GoodsDAO{
 		return this.getSqlSession().selectList("goodsInfo.SELECT_GODDS", gi);
 	}
 
+	@Override
+	public int insertGoods(GoodsInfo gi) {
+		
+		return this.getSqlSession().insert("goodsInfo.INSERT_GOODS", gi);
+	}
+
+	@Override
+	public int updateGoods(GoodsInfo gi) {
+		
+		return this.getSqlSession().insert("goodsInfo.UPDATE_GOODS", gi);
+	}
+
+	@Override
+	public int deleteGoods(GoodsInfo gi) {
+		
+		return this.getSqlSession().insert("goodsInfo.DELETE_GOODS", gi);
+	}
+
 }

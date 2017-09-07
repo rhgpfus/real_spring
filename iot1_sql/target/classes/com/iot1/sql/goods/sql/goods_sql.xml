@@ -20,6 +20,25 @@
 		parameterType="user" 이것이 UserInfo를 바라본다.
 	 	resultType : 리턴타입이  goods(GoodsInfo)-->
 	</select>
+	
+	<insert id="INSERT_GOODS" parameterType="goods">
+		insert into goods_info(giname, gidesc, vinum, gidate, gitime)
+		 values(#{giName}, #{giDesc}, #{viNum}, date_format(now(), '%Y%m%d'), date_format(now(), '%H%i%s') )
+	</insert>
+	
+	<update id="UPDATE_GOODS" parameterType="goods">
+		update goods_info
+		set giname = #{giName},
+		gidesc = #{giDesc},
+		vinum = #{viNum}
+		
+		where ginum = #{giNum}     
+	</update>
+	
+	<delete id="DELETE_GOODS" parameterType="goods">
+		delete from goods_info
+		where ginum = #{giNum}
+	</delete>
 </mapper>
 
 
