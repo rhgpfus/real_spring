@@ -9,4 +9,6 @@ public interface VenderDAO {
 	public VenderInfo selectVenderInfo(VenderInfo vi);
 	
 	public List<VenderInfo> selectVenderInfoList(VenderInfo vi);
+	
+	public List<VenderInfo> selectVenderInfoCombo();
 }

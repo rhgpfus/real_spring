@@ -9,4 +9,6 @@ public interface VenrderService {
 	public VenderInfo getVenderInfo(VenderInfo vi);
 	
 	public List<VenderInfo> getVenderInfoList(VenderInfo vi);
+	
+	public List<VenderInfo> getVenderInfoCombo();
 }

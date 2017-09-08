@@ -26,4 +26,10 @@ public class VenderInfoImpl implements VenrderService{
 		return vd.selectVenderInfoList(vi);
 	}
 
+	@Override
+	public List<VenderInfo> getVenderInfoCombo() {
+		
+		return vd.selectVenderInfoCombo();
+	}
+
 }

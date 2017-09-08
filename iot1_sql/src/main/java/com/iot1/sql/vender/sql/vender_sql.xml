@@ -3,6 +3,11 @@
 
 <mapper namespace="venderInfo">
 
+	<select id="SELECT_VENDER_COMBO" parameterType="vender" resultType="vender">
+		select vinum, viname
+		from vender_info
+	</select>
+	
 	<select id="SELECT_VENDER" parameterType="vender" resultType="vender">
 	  select 
 	    vinum,
