@@ -11,4 +11,10 @@ public interface VenderDAO {
 	public List<VenderInfo> selectVenderInfoList(VenderInfo vi);
 	
 	public List<VenderInfo> selectVenderInfoCombo();
+	
+	public int insertVender(VenderInfo vi);
+	
+	public int updateVender(VenderInfo vi);
+	
+	public int deleteVender(VenderInfo vi);
 }

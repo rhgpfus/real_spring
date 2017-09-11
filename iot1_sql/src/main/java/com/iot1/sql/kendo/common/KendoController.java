@@ -15,6 +15,15 @@ public class KendoController {
 		String productName;
 		double unitPrice;
 		String unitsInStock;
+		String header1;
+		
+		
+		public String getHeader1() {
+			return header1;
+		}
+		public void setHeader1(String header1) {
+			this.header1 = header1;
+		}
 		public String getProductName() {
 			return productName;
 		}
@@ -43,6 +52,7 @@ public class KendoController {
 			p.setProductName("test" + i);
 			p.setUnitPrice(i*1.1);
 			p.setUnitsInStock("유닛테스트" + (i%2));
+			p.setHeader1("헤더" + i);
 			proList.add(p);
 		}
 		return proList;

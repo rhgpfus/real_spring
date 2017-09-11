@@ -1,6 +1,10 @@
 package com.iot1.sql.goods.controller;
 
+import java.io.IOException;
 import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +23,7 @@ public class GoodsController {
 	private GoodsService gs;
 	
 	@RequestMapping(value="/goods/list", method=RequestMethod.POST)
-	public @ResponseBody List<GoodsInfo> getGoodsInfoList(GoodsInfo gi){
+	public @ResponseBody List<GoodsInfo> getGoodsInfoList(@RequestBody GoodsInfo gi){
 		return gs.getGoodsInfoList(gi);
 	}
 	
@@ -31,7 +35,7 @@ public class GoodsController {
 			System.out.println(gi2);
 			System.out.println(result);
 		}
-		return gs.getGoodsInfoList(gi);
+		return gs.getGoodsInfoList(null);
 	}
 	
 	@RequestMapping(value="/goods/update", method=RequestMethod.POST)
@@ -42,7 +46,7 @@ public class GoodsController {
 			System.out.println(gi2);
 			System.out.println(result);
 		}
-		return gs.getGoodsInfoList(gi);
+		return gs.getGoodsInfoList(null);
 	}
 	
 	@RequestMapping(value="/goods/delete", method=RequestMethod.POST)
@@ -53,7 +57,36 @@ public class GoodsController {
 			System.out.println(gi2);
 			System.out.println(result);
 		}
+		return gs.getGoodsInfoList(null);
+	}
+	
+	@RequestMapping(value="/goods/createone",method=RequestMethod.POST)
+	public @ResponseBody List<GoodsInfo> insertGoodsInfo(@RequestBody GoodsInfo gi){
+		gs.insertGoods(gi);
 		return gs.getGoodsInfoList(gi);
 	}
 	
+	@RequestMapping(value="/goods/deleteone",method=RequestMethod.POST)
+	public @ResponseBody List<GoodsInfo> deleteGoodsInfo(@RequestBody GoodsInfo gi){
+		int result = gs.deleteGoods(gi);
+		return gs.getGoodsInfoList(gi);
+	}
+	
+	@RequestMapping(value="/goods/updateone",method=RequestMethod.POST)
+	public @ResponseBody List<GoodsInfo> updateGoodsInfo(@RequestBody GoodsInfo gi){
+		int result = gs.updateGoods(gi);
+		return gs.getGoodsInfoList(gi);
+	}
+	
+	@RequestMapping(value="/goods/excel", method=RequestMethod.POST)
+    public @ResponseBody
+    void save(String fileName, String base64, String contentType, HttpServletResponse response) throws IOException {
+		response.setHeader("Content-Disposition", "attachment;filename=" + fileName);
+        response.setContentType(contentType);
+        byte[] data = DatatypeConverter.parseBase64Binary(base64);
+        
+        response.setContentLength(data.length);
+        response.getOutputStream().write(data);
+        response.flushBuffer();
+    }
 }

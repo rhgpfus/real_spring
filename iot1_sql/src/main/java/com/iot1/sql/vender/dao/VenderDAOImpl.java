@@ -28,5 +28,23 @@ public class VenderDAOImpl extends SqlSessionDaoSupport implements VenderDAO{
 		return this.getSqlSession().selectList("venderInfo.SELECT_VENDER_COMBO");
 	}
 
+	@Override
+	public int insertVender(VenderInfo vi) {
+		
+		return this.getSqlSession().insert("venderInfo.INSERT_VENDER", vi);
+	}
+
+	@Override
+	public int updateVender(VenderInfo vi) {
+		
+		return this.getSqlSession().update("venderInfo.UPDATE_VENDER", vi);
+	}
+
+	@Override
+	public int deleteVender(VenderInfo vi) {
+		
+		return this.getSqlSession().delete("venderInfo.DELETE_VENDER", vi);
+	}
+
 	
 }

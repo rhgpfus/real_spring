@@ -23,7 +23,7 @@
 	
 	<insert id="INSERT_GOODS" parameterType="goods">
 		insert into goods_info(giname, gidesc, vinum, gidate, gitime)
-		 values(#{giName}, #{giDesc}, #{viNum}, date_format(now(), '%Y%m%d'), date_format(now(), '%H%i%s') )
+		 values(#{giName}, #{giDesc}, #{viNum}, date_format(now(), '%Y-%m-%d'), date_format(now(), '%H:%i:%s') )
 	</insert>
 	
 	<update id="UPDATE_GOODS" parameterType="goods">

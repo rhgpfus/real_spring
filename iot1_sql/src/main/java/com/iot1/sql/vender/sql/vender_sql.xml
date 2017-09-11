@@ -29,6 +29,25 @@
 	 resultType : 리턴타입이  vender(VenderInfo) mybatis에 있는 alias="vender".
 	 -->
 	</select>
+	
+	<insert id="INSERT_VENDER" parameterType="vender">
+		insert into vender_info(viname, videsc, viaddress, viphone, vidate, vitime)
+		values(#{viName}, #{viDesc}, #{viAddress}, #{viPhone}, date_format(now(), '%Y-%m-%d'), date_format(now(), '%H:%i:%s') )
+	</insert>
+	
+	<update id="UPDATE_VENDER" parameterType="vender">
+		update vender_info
+		set viname = #{viName},
+		videsc = #{viDesc},
+		viaddress = #{viAddress},
+		viphone = #{viPhone}
+		where vinum = #{viNum} 
+	</update>
+	
+	<delete id="DELETE_VENDER" parameterType="vender">
+		delete from vender_info
+		where vinum = #{viNum}
+	</delete>
 </mapper>
 
 
