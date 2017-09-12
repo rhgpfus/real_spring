@@ -44,6 +44,7 @@
 
 		function onDataBound(arg) {
 			console.log("Grid data bound");
+			//컬럼정보가 다 들어간 후의 시점.
 		}
 
 		function onDataBinding(arg) {
