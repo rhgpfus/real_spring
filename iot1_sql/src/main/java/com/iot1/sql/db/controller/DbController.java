@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.iot1.sql.db.dto.DataBase;
 import com.iot1.sql.db.dto.DbInfo;
+import com.iot1.sql.db.dto.Table;
 import com.iot1.sql.db.service.DbService;
 
 @Controller
@@ -39,7 +40,7 @@ public class DbController {
 		return map;
 	}
 	
-	@RequestMapping(value="db/table/list", method=RequestMethod.POST)
+	@RequestMapping(value="/db/table/list", method=RequestMethod.POST)
 	public @ResponseBody ModelMap getTableList(@RequestBody DataBase db, ModelMap map){
 		try{
 			map.put("tableList", ds.getTableList(db));
@@ -49,10 +50,11 @@ public class DbController {
 		return map;
 	}
 	
-	@RequestMapping(value="db/tableInfo/list", method=RequestMethod.POST)
-	public @ResponseBody ModelMap getTableInfoSelect(@RequestBody DataBase db, ModelMap map){
+	@RequestMapping(value="/db/table/info", method=RequestMethod.POST)
+	public @ResponseBody ModelMap getTableInfo(@RequestBody Table table, ModelMap map){
 		try{
-			map.put("tableList", ds.getTableList(db));
+			map.put("tableList", ds.getTableInfo(table));
+			map.put("key", "tableList");
 		}catch(Exception e){
 			map.put("error", e.getMessage());
 		}

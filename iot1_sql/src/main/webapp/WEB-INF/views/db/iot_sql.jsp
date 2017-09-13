@@ -1,13 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@taglib prefix="kendo" uri="http://www.kendoui.com/jsp/tags"%>
 <%@ include file="/WEB-INF/views/common/header.jsp" %>
-<c:url var="dbRUrl" value="/db/list/tree" />
-
+<%@ page session="false" %>
+<c:set var="dbTreeJsp" value="/WEB-INF/views/db/db_treeview.jsp" />
+<c:set var="tableInfoJsp" value="/WEB-INF/views/db/table_info.jsp" />
+<c:set var="tabJsp" value="/WEB-INF/views/db/tab.jsp" />
+<c:url var="tableInfoUrl" value="/db/table/info" />
 <title>IOT SQL</title>
 </head>
 <script>
 var treeview;
+
 function onBound(){ 
 	treeview = $('#treeview').data('kendoTreeView');
 }
@@ -15,16 +18,20 @@ function onBound(){
 function treeSelect(){
 	window.selectedNode = treeview.select();
 	var data = treeview.dataItem(window.selectedNode);
-	if(data.database){
+	if(data.database && !data.hasChildren){
 	   var au = new AjaxUtil("db/table/list");
 	   var param = {};
 	   param["database"] = data.database;
 	   au.param = JSON.stringify(param);
 	   au.setCallbackSuccess(callbackForTreeItem2);
 	   au.send();
-	   alert("이걸 누르면 table이 나오지!");
+	   
+	}else if (data.tableName){
+		var ki = new KendoItem(treeview, $("#tableInfoGrid"), "${tableInfoUrl}","tableName");
+		ki.send();
 	}
 }
+
 function callbackForTreeItem2(result){
 	if(result.error){
 		alert(result.error);
@@ -36,7 +43,6 @@ function callbackForTreeItem2(result){
 			tableName: table.tableName
         }, treeview.select());
 	}
-	$("#btnConnect").text("접속해제");
 }
 function callbackForTreeItem(result){
 	if(result.error){
@@ -51,7 +57,7 @@ function callbackForTreeItem(result){
 	}
 	$("#btnConnect").text("접속해제");
 }
-function toolbarEvent(){
+function toolbarEvent(e){
 	if($("#btnConnect").text()=="접속해제"){
 		treeview.dataSource.read();
 		$("#btnConnect").text("접속");
@@ -67,41 +73,15 @@ function toolbarEvent(){
 		au.param = JSON.stringify(param);
 		au.setCallbackSuccess(callbackForTreeItem);
 		au.send();
-		alert("이건 database가 나오지!")
 	}else{
 		alert("접속하실 데이터베이스를 선택해주세요");
 	}
-}
-function treeResult(){
-	window.selectedNode = treeview.select();
-	var data = treeview.dataItem(window.selectedNode);
-	if(data.database){
-	   var au = new AjaxUtil("db/tableInfo/list");
-	   var param = {};
-	   param["database"] = data.database;
-	   au.param = JSON.stringify(param);
-	   au.setCallbackSuccess(callbackForTreeItem3);
-	   au.send();
-	   alert("이걸 누르면 table이 나오지!");
-	}
-}
-function callbackForTreeItem3(result){
-	if(result.error){
-		alert(result.error);
-		return;
-	}
-	for(var i=0, max=result.tableList.length;i<max;i++){
-		var table = result.tableList[i];
-		treeview.append({
-			tableName: table.tableName
-        }, treeview.select());
-	}
-	$("#btnConnect").text("접속해제");
 }
 
 </script>
 <body>
 <br><br><br>
+<c:import url="${menuUrl}"/> 
 <kendo:splitter name="vertical" orientation="vertical">
     <kendo:splitter-panes>
         <kendo:splitter-pane id="top-pane" collapsible="false">
@@ -111,29 +91,7 @@ function callbackForTreeItem3(result){
 				        <kendo:splitter-pane id="left-pane" collapsible="true" size="220px">
 				            <kendo:splitter-pane-content >
 				                <div class="pane-content">
-					                <kendo:toolBar name="toolbar">
-										<kendo:toolBar-items>
-											<kendo:toolBar-item type="button" text="접속" id="btnConnect" click="toolbarEvent"></kendo:toolBar-item>
-										</kendo:toolBar-items>
-									</kendo:toolBar>
-									 <kendo:treeView name="treeview" dataTextField="<%= new String[]{\"dbTitle\", \"database\",\"tableName\"} %>" change="treeSelect"  
-									 dataBound="onBound">
-									     <kendo:dataSource>
-									         <kendo:dataSource-transport>
-									             <kendo:dataSource-transport-read url="${dbRUrl}" type="POST"  contentType="application/json"/>    
-									             <kendo:dataSource-transport-parameterMap>
-									             	<script>
-										              	function parameterMap(options,type) {
-										              		return JSON.stringify(options);
-										              	}
-									             	</script>
-									             </kendo:dataSource-transport-parameterMap>         
-									         </kendo:dataSource-transport>
-									         <kendo:dataSource-schema>
-									             <kendo:dataSource-schema-hierarchical-model id="dbTitle" hasChildren="hasDatabases"/>
-									         </kendo:dataSource-schema>
-									     </kendo:dataSource>
-									 </kendo:treeView>
+				                	<c:import url="${dbTreeJsp}"/>
                                 </div>
 				            </kendo:splitter-pane-content>
 				        </kendo:splitter-pane>
@@ -143,38 +101,14 @@ function callbackForTreeItem3(result){
 				   					<kendo:splitter-panes>
 		       							<kendo:splitter-pane id="top-pane" collapsible="false" >
 							                <div class="pane-content">
-						                		<h3>Inner splitter / middle top pane</h3>
-						                		<kendo:treeView name="treeview_middle_top" dataTextField="<%= new String[]{\"dbTitle\", \"database\",\"tableName\"} %>" change="treeResult"  
-												 dataBound="onBound">
-												     <kendo:dataSource>
-												         <kendo:dataSource-transport>
-												             <kendo:dataSource-transport-read url="${dbRUrl}" type="POST"  contentType="application/json"/>    
-												             <kendo:dataSource-transport-parameterMap>
-												             	<script>
-													              	function parameterMap(options,type) {
-													              		return JSON.stringify(options);
-													              	}
-												             	</script>
-												             </kendo:dataSource-transport-parameterMap>         
-												         </kendo:dataSource-transport>
-												         
-												         <kendo:dataSource-schema> <!-- 데이터를 입력 받는 부분. -->
-												        	<kendo:dataSource-schema-hierarchical-model id="dbTitle" hasChildren="hasDatabases"/>
-												         </kendo:dataSource-schema>
-												         <kendo:dataSource-schema>
-												        	<kendo:dataSource-schema-hierarchical-model id="dbTitle" hasChildren="hasDatabases"/>
-												         </kendo:dataSource-schema>
-												         
-												     </kendo:dataSource>
-												 </kendo:treeView>
+						                		<c:import url="${tabJsp}"/>
 			                                </div>
 		       							</kendo:splitter-pane>
 		       							<kendo:splitter-pane id="middle-pane" collapsible="true" >
 							                <div class="pane-content">
-						                		<h3>Inner splitter / middle-middle pane</h3>
+						                		<c:import url="${tableInfoJsp}"/>
 			                                </div>
 		       							</kendo:splitter-pane>
-		       							
 	       							</kendo:splitter-panes>
        							</kendo:splitter>
 				            </kendo:splitter-pane-content>
@@ -198,7 +132,7 @@ function callbackForTreeItem3(result){
         </kendo:splitter-pane>
     </kendo:splitter-panes>
 </kendo:splitter>
-
+</body>
 <style>
     #vertical {
         height: 580px;
@@ -249,6 +183,12 @@ function callbackForTreeItem3(result){
     #content .demo-section input {
         width: 80%;
     }
+    .k-button >.k-toolbar-first-visible >.k-toolbar-last-visible{
+    	color:red;
+    }
+    a[class='k-link'], tr{ 
+		text-align: center;
+		color:blue;
+	}
 </style>
-</body>
 </html>
