@@ -5,6 +5,7 @@
 <c:set var="dbTreeJsp" value="/WEB-INF/views/db/db_treeview.jsp" />
 <c:set var="tableInfoJsp" value="/WEB-INF/views/db/table_info.jsp" />
 <c:set var="tabJsp" value="/WEB-INF/views/db/tab.jsp" />
+<!-- jsp를 바라볼땐  c:set으로 -->
 <c:url var="tableInfoUrl" value="/db/table/info" />
 <title>IOT SQL</title>
 </head>
@@ -13,8 +14,60 @@ var treeview;
 
 function onBound(){ 
 	treeview = $('#treeview').data('kendoTreeView');
+	$("#query").keydown(function(e) {
+		var keyCode = e.keyCode || e.which;
+		if(keyCode==120){
+			var sql;
+			var sqls;
+			if(e.ctrlKey && keyCode==120 && e.shiftKey){
+				sql = this.value;
+				var cursor = this.selectionStart;
+				var startSql = sql.substr(0,cursor);
+				var startSap = startSql.lastIndexOf(";");
+				startSql = startSql.substr(startSap+1);
+				var endSql = sql.substr(cursor);
+				var endSap = endSql.indexOf(";");
+				if(endSap==-1) {
+					endSap=sql.length;
+				}
+				endSql = endSql.substr(0,endSap);
+				sql = startSql + endSql;
+			}else if(e.ctrlKey && keyCode==120){
+				sql = this.value.substr(this.selectionStart, this.selectionEnd - this.selectionStart);
+			}else if(keyCode==120){
+				sql = this.value;
+			}
+			if(sql){
+				sql = sql.trim();
+				sqls = sql.split(";");
+				if(sqls.length==1){
+					var au = new AjaxUtil("db/run/sql");
+					var param = {};
+					param["sql"] = sql;
+					au.param = JSON.stringify(param);
+					au.setCallbackSuccess(callbackSql);
+					au.send();
+					return;
+				}else if(sqls){
+					
+					return;
+				}
+			}
+			
+		}
+	});
 }
-
+function callbackSql(result){
+	var key = result.key;
+	var obj = result[key];
+	alert(obj.columns);
+	
+	for(var i=0,max=obj.length; i<max; i++){
+		var obj1 = obj.columns[i];
+		alert(obj1);
+	}
+	
+}
 function treeSelect(){
 	window.selectedNode = treeview.select();
 	var data = treeview.dataItem(window.selectedNode);
@@ -25,7 +78,6 @@ function treeSelect(){
 	   au.param = JSON.stringify(param);
 	   au.setCallbackSuccess(callbackForTreeItem2);
 	   au.send();
-	   
 	}else if (data.tableName){
 		var ki = new KendoItem(treeview, $("#tableInfoGrid"), "${tableInfoUrl}","tableName");
 		ki.send();
@@ -44,6 +96,7 @@ function callbackForTreeItem2(result){
         }, treeview.select());
 	}
 }
+
 function callbackForTreeItem(result){
 	if(result.error){
 		alert(result.error);
@@ -81,7 +134,7 @@ function toolbarEvent(e){
 </script>
 <body>
 <br><br><br>
-<c:import url="${menuUrl}"/> 
+<%@ include file="/WEB-INF/views/common/top_menu.jsp" %>
 <kendo:splitter name="vertical" orientation="vertical">
     <kendo:splitter-panes>
         <kendo:splitter-pane id="top-pane" collapsible="false">
@@ -105,7 +158,7 @@ function toolbarEvent(e){
 			                                </div>
 		       							</kendo:splitter-pane>
 		       							<kendo:splitter-pane id="middle-pane" collapsible="true" >
-							                <div class="pane-content">
+							                <div class="pane-content" id="grid">
 						                		<c:import url="${tableInfoJsp}"/>
 			                                </div>
 		       							</kendo:splitter-pane>
