@@ -17,8 +17,8 @@
 <script src="//cdnjs.cloudflare.com/ajax/libs/jszip/2.4.0/jszip.min.js"></script>
 <script src="<c:url value='/resources/js/kendo.all.min.js' />"></script>
 <script src="<c:url value='/resources/js/kendo.timezones.min.js' />"></script>
-<script src="<c:url value='/resources/shared/js/console.js'/>"></script>
 <script src="<c:url value='/resources/shared/js/prettify.js'/>"></script>
+<script src="<c:url value="/resources/js/js2/console.js?version=${pVar}"/>"></script>
 <link rel="stylesheet" href="<c:url value="/resources/ui/btsp3.7.7/css/bootstrap-theme.min.css?version=${pVar}"/>"/>
 <link rel="stylesheet" href="<c:url value="/resources/ui/btsp3.7.7/css/bootstrap.min.css?version=${pVar}"/>"/>
 <link rel="stylesheet" href="<c:url value="/resources/ui/btsp3.7.7/css/bootstrap-table.css?version=${pVar}"/>"/>
@@ -30,6 +30,7 @@
 <link href="<c:url value='/resources/css/dataviz/kendo.dataviz.min.css'/>" rel="stylesheet" />
 <link href="<c:url value='/resources/css/dataviz/kendo.dataviz.default.min.css'/>" rel="stylesheet" />
 <link href="<c:url value='/resources/shared/styles/examples-offline.css'/>" rel="stylesheet"/>
+
 <script>
  
 $(document).ready(function(){

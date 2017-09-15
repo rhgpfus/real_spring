@@ -72,7 +72,7 @@ public class DbDAOImpl extends SqlSessionDaoSupport implements DbDAO{
 	@Override
 	public Map<String, Object> runSql(Map<String, String> pm) throws Exception {
 		String sql = pm.get("sql");
-		sql = sql.trim();
+ 		sql = sql.trim();
 		Map<String, Object> map = new HashMap<String, Object>();
 		Statement statement = dsf.getSqlSession().getConnection().createStatement();
 		if(sql.indexOf("select")==0){

@@ -13,7 +13,13 @@
 var treeview;
 
 function onBound(){ 
-	treeview = $('#treeview').data('kendoTreeView');
+	if(!treeview){
+		treeview = $('#treeview').data('kendoTreeView');
+	} 
+	kendoConsole.log("onBound");
+}
+	
+$(document).ready(function(){
 	$("#query").keydown(function(e) {
 		var keyCode = e.keyCode || e.which;
 		if(keyCode==120){
@@ -49,25 +55,50 @@ function onBound(){
 					au.send();
 					return;
 				}else if(sqls){
-					
 					return;
 				}
 			}
-			
 		}
 	});
-}
+})
+	
 function callbackSql(result){
-	var key = result.key;
-	var obj = result[key];
-	alert(obj.columns);
 	
-	for(var i=0,max=obj.length; i<max; i++){
-		var obj1 = obj.columns[i];
-		alert(obj1);
+	if(!result.error){
+		var key = result.key;
+		var obj = result[key];
+		var gridData = "";
+		var type = obj.type;
+		var rows = obj.row;
+		
+		try{
+			$('#gridTest').kendoGrid('destroy').empty();
+		}catch(e){}
+		
+		if(type=="select"){
+			var gridData = obj.list;
+			
+			var gridData = $("#gridTest").kendoGrid({
+			    dataSource: {
+			        data: gridData,
+			        pageSize: 5
+			      },
+			      editable: false,
+			      sortable: true,
+			      pageable:true
+			});
+			kendoConsole.log(type + " 찾은 행: " + gridData.length);
+		}else{
+			kendoConsole.log(
+					type + "<br>" + "/* Affected rows: " + rows + " 찾은 행: " + gridData.length
+			);
+		}
+	}else{
+		kendoConsole.log(result.error);
 	}
-	
 }
+	
+
 function treeSelect(){
 	window.selectedNode = treeview.select();
 	var data = treeview.dataItem(window.selectedNode);
@@ -158,9 +189,9 @@ function toolbarEvent(e){
 			                                </div>
 		       							</kendo:splitter-pane>
 		       							<kendo:splitter-pane id="middle-pane" collapsible="true" >
-							                <div class="pane-content" id="grid">
-						                		<c:import url="${tableInfoJsp}"/>
-			                                </div>
+							                <div class="pane-content" id="gridTest" style="width: 100%;">
+						                	
+						                	</div>
 		       							</kendo:splitter-pane>
 	       							</kendo:splitter-panes>
        							</kendo:splitter>
@@ -172,9 +203,8 @@ function toolbarEvent(e){
         </kendo:splitter-pane>
         <kendo:splitter-pane id="middle-pane" collapsible="false" size="100px">
             <kendo:splitter-pane-content>
-                <div class="pane-content">
-	                <h3>Outer splitter / middle pane</h3>
-	                <p>Resizable only.</p>
+                <div class="pane-content" id="gridLog" style="width: 100%;">
+	               <div class="console"></div>
                 </div>
             </kendo:splitter-pane-content>
         </kendo:splitter-pane>
