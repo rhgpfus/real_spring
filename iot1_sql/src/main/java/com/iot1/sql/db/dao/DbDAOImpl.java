@@ -103,4 +103,44 @@ public class DbDAOImpl extends SqlSessionDaoSupport implements DbDAO{
 		return map;
 	}
 
+	@Override
+	public Map<String, Object> runSqlList(Map<String, List> pm) throws Exception {
+		List sqls = pm.get("sqls");
+		String sql = "", sqlObj = "";
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		for(int i=0,max=sqls.size(); i<max; i++){
+			sqlObj = (String) sqls.get(i);
+			sql = sqlObj.trim();
+			Statement statement = dsf.getSqlSession().getConnection().createStatement();
+			if(sql.indexOf("select")==0){
+				ResultSet resultSet = statement.executeQuery(sql);
+				ResultSetMetaData metadata = resultSet.getMetaData();
+				int columnCount = metadata.getColumnCount();
+				List<String> columns = new ArrayList<String>();
+				for(int j = 1; j <= columnCount; j++){
+					String columnName = metadata.getColumnName(j);
+					columns.add(columnName);
+				}
+				List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+				while(resultSet.next()){
+					Map<String, String> hm = new HashMap<String, String>();
+					for(String column : columns){
+						hm.put(column, resultSet.getString(column));
+					}
+					list.add(hm);
+				}
+				map.put("type", "select");
+				map.put("list", list);
+				map.put("columns", columns);
+			}else {
+				int result = statement.executeUpdate(sql);
+				map.put("type", "save");
+				map.put("row", result);
+			}
+			System.out.println(map);
+		}
+		return map;
+	}
+
 }

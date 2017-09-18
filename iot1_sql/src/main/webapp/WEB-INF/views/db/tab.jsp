@@ -45,7 +45,7 @@
 }
 
 .weather {
-	margin: 0 auto 30px;
+	margin: 0 0 0 0;
 	text-align: center;
 }
 

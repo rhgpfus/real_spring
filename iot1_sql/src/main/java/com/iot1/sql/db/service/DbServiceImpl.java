@@ -1,5 +1,6 @@
 package com.iot1.sql.db.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -50,5 +51,12 @@ public class DbServiceImpl implements DbService{
 		return dDao.runSql(pm);
 	}
 
+	@Override
+	public Map<String, Object> runSqlList(Map<String, List> pm) throws Exception {
+		
+		return dDao.runSqlList(pm);
+	}
+
+	
 	
 }

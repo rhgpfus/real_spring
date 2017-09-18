@@ -1,5 +1,6 @@
 package com.iot1.sql.db.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -23,4 +24,6 @@ public interface DbDAO {
 	public List<Column> selectTableInfo(Table table) throws Exception;
 	
 	public Map<String, Object> runSql(Map<String, String> pm)throws Exception;
+	
+	public Map<String, Object> runSqlList(Map<String, List> pm)throws Exception;
 }

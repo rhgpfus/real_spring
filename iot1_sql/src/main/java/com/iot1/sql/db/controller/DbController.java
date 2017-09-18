@@ -1,5 +1,6 @@
 package com.iot1.sql.db.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,17 @@ public class DbController {
 		try{
 			map.put("resultMap", ds.runSql(pm));
 			map.put("key", "resultMap");
+		}catch(Exception e){
+			map.put("error", e.getMessage());
+		}
+		return map;
+	}
+	
+	@RequestMapping(value="/db/run/sqls", method=RequestMethod.POST)
+	public @ResponseBody ModelMap getSqlResultList(@RequestBody Map<String, List> pm, ModelMap map){
+		try{
+			map.put("sqls", ds.runSqlList(pm));
+			map.put("key", "sqls");
 		}catch(Exception e){
 			map.put("error", e.getMessage());
 		}

@@ -22,5 +22,3 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-<br><p><br><p>
-<br><p>
