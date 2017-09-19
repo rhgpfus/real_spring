@@ -1,6 +1,8 @@
 package com.iot1.sql.db.dao;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
@@ -74,8 +76,10 @@ public class DbDAOImpl extends SqlSessionDaoSupport implements DbDAO{
 		String sql = pm.get("sql");
  		sql = sql.trim();
 		Map<String, Object> map = new HashMap<String, Object>();
+		List<String> type = new ArrayList<String>();
 		Statement statement = dsf.getSqlSession().getConnection().createStatement();
 		if(sql.indexOf("select")==0){
+			type.add("select");
 			ResultSet resultSet = statement.executeQuery(sql);
 			ResultSetMetaData metadata = resultSet.getMetaData();
 			int columnCount = metadata.getColumnCount();
@@ -92,12 +96,23 @@ public class DbDAOImpl extends SqlSessionDaoSupport implements DbDAO{
 				}
 				list.add(hm);
 			}
-			map.put("type", "select");
+			map.put("type", type);
 			map.put("list", list);
 			map.put("columns", columns);
-		}else{
+		}else if(sql.indexOf("insert")==0){
 			int result = statement.executeUpdate(sql);
-			map.put("type", "save");
+			type.add("insert");
+			map.put("type", type);
+			map.put("row", result);
+		}else if(sql.indexOf("update")==0){
+			int result = statement.executeUpdate(sql);
+			type.add("update");
+			map.put("type", type);
+			map.put("row", result);
+		}else if(sql.indexOf("delete")==0){
+			int result = statement.executeUpdate(sql);
+			type.add("delete");
+			map.put("type", type);
 			map.put("row", result);
 		}
 		return map;
@@ -107,39 +122,88 @@ public class DbDAOImpl extends SqlSessionDaoSupport implements DbDAO{
 	public Map<String, Object> runSqlList(Map<String, List> pm) throws Exception {
 		List sqls = pm.get("sqls");
 		String sql = "", sqlObj = "";
-		
 		Map<String, Object> map = new HashMap<String, Object>();
+		Connection con = null;
+		if(con==null){
+			con = dsf.getSqlSession().getConnection();
+		}
+		Statement statement = con.createStatement();
+		List<String> type = new ArrayList<String>();
 		for(int i=0,max=sqls.size(); i<max; i++){
 			sqlObj = (String) sqls.get(i);
 			sql = sqlObj.trim();
-			Statement statement = dsf.getSqlSession().getConnection().createStatement();
-			if(sql.indexOf("select")==0){
-				ResultSet resultSet = statement.executeQuery(sql);
-				ResultSetMetaData metadata = resultSet.getMetaData();
-				int columnCount = metadata.getColumnCount();
-				List<String> columns = new ArrayList<String>();
-				for(int j = 1; j <= columnCount; j++){
-					String columnName = metadata.getColumnName(j);
-					columns.add(columnName);
-				}
-				List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-				while(resultSet.next()){
-					Map<String, String> hm = new HashMap<String, String>();
-					for(String column : columns){
-						hm.put(column, resultSet.getString(column));
+			try{
+				if(sql.indexOf("select")==0){
+					type.add("select");
+					try{
+						ResultSet resultSet = statement.executeQuery(sql);
+						ResultSetMetaData metadata = resultSet.getMetaData();
+						int columnCount = metadata.getColumnCount();
+						List<String> columns = new ArrayList<String>();
+						for(int j = 1; j <= columnCount; j++){
+							String columnName = metadata.getColumnName(j);
+							columns.add(columnName);
+						}
+						List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+						while(resultSet.next()){
+							Map<String, String> hm = new HashMap<String, String>();
+							for(String column : columns){
+								hm.put(column, resultSet.getString(column));
+							}
+							list.add(hm);
+						}
+						map.put("type", type);
+						map.put("list", list);
+						map.put("columns", columns);
+						con.commit();
+						System.out.println(map);
+					}catch(Exception e){
+						e.getMessage();
+						con.rollback();
 					}
-					list.add(hm);
+				}else if(sql.indexOf("insert")==0){
+					type.add("insert");
+					try{
+						int result = statement.executeUpdate(sql);
+						map.put("type", type);
+						map.put("row", result);
+						con.commit();
+						System.out.println(map);
+					}catch(Exception e){
+						e.getMessage();
+						con.rollback();
+					}
+				}else if(sql.indexOf("delete")==0){
+					type.add("delete");
+					try{
+						int result = statement.executeUpdate(sql);
+						map.put("type", type);
+						map.put("row", result);
+						con.commit();
+						System.out.println(map);
+					}catch(Exception e){
+						e.getMessage();
+						con.rollback();
+					}
+				}else if(sql.indexOf("update")==0){
+					type.add("update");
+					try{
+						int result = statement.executeUpdate(sql);
+						map.put("type", type);
+						map.put("row", result);
+						con.commit();
+						System.out.println(map);
+					}catch(Exception e){
+						e.getMessage();
+						con.rollback();
+					}
 				}
-				map.put("type", "select");
-				map.put("list", list);
-				map.put("columns", columns);
-			}else {
-				int result = statement.executeUpdate(sql);
-				map.put("type", "save");
-				map.put("row", result);
+			}catch(Exception e){
+				e.printStackTrace();
+				con.rollback();
 			}
-			System.out.println(map);
 		}
+		System.out.println(map);
 		return map;
 	}
 

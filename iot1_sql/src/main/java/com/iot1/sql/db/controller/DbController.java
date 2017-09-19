@@ -81,6 +81,7 @@ public class DbController {
 			map.put("key", "sqls");
 		}catch(Exception e){
 			map.put("error", e.getMessage());
+			System.out.println(map);
 		}
 		return map;
 	}

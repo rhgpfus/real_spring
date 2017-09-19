@@ -74,30 +74,46 @@ function callbackSql(result){
 		var key = result.key;
 		var obj = result[key];
 		var gridData = "0";
-		var type = obj.type;
+		var types = obj.type;
 		var rows = obj.row;
 		
 		try{
 			$('#gridTest').kendoGrid('destroy').empty();
 		}catch(e){}
 		
-		if(type=="select"){
-			var gridData = obj.list;
-			
-			var gridData = $("#gridTest").kendoGrid({
-			    dataSource: {
-			        data: gridData,
-			        pageSize: 5
-			      },
-			      editable: false,
-			      sortable: true,
-			      pageable:true
-			});
-			kendoConsole.log(type + " 찾은 행: " + gridData.length);
-		}else{
-			kendoConsole.log(
-					type + "<br>" + "/* Affected rows: " + rows + " 찾은 행: " + gridData.length
-			);
+		
+		for(var i=0,max=types.length;i<max; i++){
+			var type = types[i];
+			if(type=="select"){
+				
+				gridData = obj.list;
+				
+				var gridParam = {
+				    dataSource : {
+				        data: gridData,
+				        pageSize: 5
+				      },
+				      editable: false,
+				      sortable: true,
+				      pageable:true
+				}
+				
+				
+				var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+			    tabStrip.append(
+			        [{
+			            text: "<b>Item 2</b>",
+			            encoded: false,                            
+			            content: "ddddddddddddddd"
+			                                     
+			        }]
+			    );
+				
+				
+				kendoConsole.log(type + " 찾은 행: " + gridData.length);
+			}else{
+				kendoConsole.log(type + "<br>" + "/* Affected rows: " + rows + " 찾은 행: " + gridData.length);
+			}		
 		}
 	}else{
 		kendoConsole.log(result.error);
@@ -195,9 +211,12 @@ function toolbarEvent(e){
 			                                </div>
 		       							</kendo:splitter-pane>
 		       							<kendo:splitter-pane id="middle-pane" collapsible="true" >
-							                <div class="pane-content" id="gridTest" style="width: 100%;">
-						                	
-						                	</div>
+							                
+							                <kendo:tabStrip name="middle-tabStrip" >
+							                	<div id="tabstrip">
+							                		<div id="tabstrip2"></div>
+							                	</div>
+											</kendo:tabStrip>
 		       							</kendo:splitter-pane>
 	       							</kendo:splitter-panes>
        							</kendo:splitter>
