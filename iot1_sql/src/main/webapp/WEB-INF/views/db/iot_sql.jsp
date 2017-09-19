@@ -76,6 +76,7 @@ function callbackSql(result){
 		var gridData = "0";
 		var types = obj.type;
 		var rows = obj.row;
+		var tabName = obj.tabName;
 		
 		try{
 			$('#gridTest').kendoGrid('destroy').empty();
@@ -102,15 +103,13 @@ function callbackSql(result){
 				var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
 			    tabStrip.append(
 			        [{
-			            text: "<b>Item 2</b>",
-			            encoded: false,                            
-			            content: "ddddddddddddddd"
-			                                     
+			            text: tabName
 			        }]
 			    );
 				
-				
+			   
 				kendoConsole.log(type + " 찾은 행: " + gridData.length);
+				var grid = $("#resultGrid").kendoGrid(gridParam);
 			}else{
 				kendoConsole.log(type + "<br>" + "/* Affected rows: " + rows + " 찾은 행: " + gridData.length);
 			}		
@@ -213,9 +212,9 @@ function toolbarEvent(e){
 		       							<kendo:splitter-pane id="middle-pane" collapsible="true" >
 							                
 							                <kendo:tabStrip name="middle-tabStrip" >
-							                	<div id="tabstrip">
-							                		<div id="tabstrip2"></div>
-							                	</div>
+							                		<div id="tabstrip">
+														<div id="resultGrid" style="width: 100%;"></div>
+													</div>
 											</kendo:tabStrip>
 		       							</kendo:splitter-pane>
 	       							</kendo:splitter-panes>

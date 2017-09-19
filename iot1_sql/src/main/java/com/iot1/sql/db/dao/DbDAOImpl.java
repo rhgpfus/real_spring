@@ -77,9 +77,16 @@ public class DbDAOImpl extends SqlSessionDaoSupport implements DbDAO{
  		sql = sql.trim();
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<String> type = new ArrayList<String>();
+		List<String> tabName = new ArrayList<String>();
 		Statement statement = dsf.getSqlSession().getConnection().createStatement();
 		if(sql.indexOf("select")==0){
 			type.add("select");
+			
+			int idx = sql.indexOf("m");
+		    String name = sql.substring(idx+2);
+		    name = name.substring(0,name.lastIndexOf(";"));
+		    tabName.add(name);
+		   
 			ResultSet resultSet = statement.executeQuery(sql);
 			ResultSetMetaData metadata = resultSet.getMetaData();
 			int columnCount = metadata.getColumnCount();
@@ -99,6 +106,7 @@ public class DbDAOImpl extends SqlSessionDaoSupport implements DbDAO{
 			map.put("type", type);
 			map.put("list", list);
 			map.put("columns", columns);
+			map.put("tabName", tabName);
 		}else if(sql.indexOf("insert")==0){
 			int result = statement.executeUpdate(sql);
 			type.add("insert");
