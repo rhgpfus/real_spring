@@ -73,32 +73,22 @@ function callbackSql(result){
 	if(!result.error){
 		var key = result.key;
 		var obj = result[key];
-		var gridData = "0";
+		var gridData = "";
 		var types = obj.type;
 		var rows = obj.row;
 		var tabName = obj.tabName;
 		
 		try{
-			$('#gridTest').kendoGrid('destroy').empty();
+// 			$('#resultGrid').kendoGrid('destroy').empty();
+			var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
+			kendoConsole.log(tabStrip.contentElement(0));
 		}catch(e){}
 		
 		
 		for(var i=0,max=types.length;i<max; i++){
 			var type = types[i];
 			if(type=="select"){
-				
 				gridData = obj.list;
-				
-				var gridParam = {
-				    dataSource : {
-				        data: gridData,
-				        pageSize: 5
-				      },
-				      editable: false,
-				      sortable: true,
-				      pageable:true
-				}
-				
 				
 				var tabStrip = $("#tabstrip").kendoTabStrip().data("kendoTabStrip");
 			    tabStrip.append(
@@ -107,9 +97,19 @@ function callbackSql(result){
 			        }]
 			    );
 				
-			   
+				var gridParam = {
+					dataSource    : {
+				        data: gridData,
+				        pageSize: 5
+				      },
+				      editable: false,
+				      sortable: true,
+				      pageable:true
+				}
+				$("#resultGrid").kendoGrid(gridParam);
+				
 				kendoConsole.log(type + " 찾은 행: " + gridData.length);
-				var grid = $("#resultGrid").kendoGrid(gridParam);
+				
 			}else{
 				kendoConsole.log(type + "<br>" + "/* Affected rows: " + rows + " 찾은 행: " + gridData.length);
 			}		
@@ -213,7 +213,7 @@ function toolbarEvent(e){
 							                
 							                <kendo:tabStrip name="middle-tabStrip" >
 							                		<div id="tabstrip">
-														<div id="resultGrid" style="width: 100%;"></div>
+														<div id="resultGrid" style="width:100%"></div>
 													</div>
 											</kendo:tabStrip>
 		       							</kendo:splitter-pane>

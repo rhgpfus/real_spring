@@ -78,7 +78,7 @@ public class DbController {
 	public @ResponseBody ModelMap getSqlResultList(@RequestBody Map<String, List> pm, ModelMap map){
 		try{
 			map.put("sqls", ds.runSqlList(pm));
-			map.put("key", "sqls");
+ 			map.put("key", "sqls");
 		}catch(Exception e){
 			map.put("error", e.getMessage());
 			System.out.println(map);

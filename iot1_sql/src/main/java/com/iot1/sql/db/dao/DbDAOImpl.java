@@ -137,6 +137,7 @@ public class DbDAOImpl extends SqlSessionDaoSupport implements DbDAO{
 		}
 		Statement statement = con.createStatement();
 		List<String> type = new ArrayList<String>();
+		List<String> tabName = new ArrayList<String>();
 		for(int i=0,max=sqls.size(); i<max; i++){
 			sqlObj = (String) sqls.get(i);
 			sql = sqlObj.trim();
@@ -144,6 +145,11 @@ public class DbDAOImpl extends SqlSessionDaoSupport implements DbDAO{
 				if(sql.indexOf("select")==0){
 					type.add("select");
 					try{
+						int idx = sql.indexOf("m");
+					    String name = sql.substring(idx+2);
+					    name = name.substring(0,name.lastIndexOf(";"));
+					    tabName.add(name);
+					    
 						ResultSet resultSet = statement.executeQuery(sql);
 						ResultSetMetaData metadata = resultSet.getMetaData();
 						int columnCount = metadata.getColumnCount();
@@ -163,6 +169,7 @@ public class DbDAOImpl extends SqlSessionDaoSupport implements DbDAO{
 						map.put("type", type);
 						map.put("list", list);
 						map.put("columns", columns);
+						map.put("tabName", tabName);
 						con.commit();
 						System.out.println(map);
 					}catch(Exception e){
